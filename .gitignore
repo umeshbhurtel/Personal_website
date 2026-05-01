@@ -28,6 +28,14 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# local data / user submissions (do not commit)
+/data/contacts.json
+/data/case-studies.json
+
+# uploaded PDFs
+/public/uploads/case-studies/*
+!/public/uploads/case-studies/.gitkeep
+
 # vercel
 .vercel
 
