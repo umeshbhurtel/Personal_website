@@ -1,0 +1,64 @@
+{
+  "areas": [
+    {
+      "id": "1",
+      "icon": "🌾",
+      "title": "AgriTech & Precision Farming",
+      "description": "Researching how IoT sensors, drone imagery, and satellite data can improve crop yields for Nepal's smallholder farming communities — where 60% of the population still depends on agriculture."
+    },
+    {
+      "id": "2",
+      "icon": "🤖",
+      "title": "AI/ML Annotation & Data Pipelines",
+      "description": "Investigating practical applied AI: how quality training data is sourced, annotated, and validated — and what the global market for AI data services looks like for emerging economies."
+    },
+    {
+      "id": "3",
+      "icon": "🌐",
+      "title": "Global Talent Models",
+      "description": "Studying Technology-as-a-Service and Employer-of-Record frameworks that enable remote talent acquisition across jurisdictions — with a focus on Nepal-to-West talent corridors."
+    },
+    {
+      "id": "4",
+      "icon": "💡",
+      "title": "Decision Support Systems",
+      "description": "Exploring rule-based inference engines and expert systems for domains with limited digital penetration — insurance, agriculture policy, and public service delivery."
+    },
+    {
+      "id": "5",
+      "icon": "🖥️",
+      "title": "Potential of a GPU Centre in Nepal",
+      "description": "Researching the economic and technical feasibility of establishing a shared GPU compute centre in Nepal — examining power infrastructure, cooling requirements, hydropower advantages, AI workload demand, and the potential to position Nepal as a regional hub for affordable ML training and inference services."
+    },
+    {
+      "id": "1782661251267",
+      "icon": "🔬",
+      "title": "umesh",
+      "description": "test by me "
+    },
+    {
+      "id": "1782661269209",
+      "icon": "🔬",
+      "title": "",
+      "description": ""
+    }
+  ],
+  "certifications": [
+    {
+      "id": "1",
+      "icon": "🏅",
+      "label": "PV Foundations Cohort #9"
+    },
+    {
+      "id": "2",
+      "icon": "☁️",
+      "label": "AWS Academy Cloud Foundations (Capstone-level)"
+    },
+    {
+      "id": "3",
+      "icon": "🎓",
+      "label": "B.Sc. (Hons.) IT — Asia Pacific University",
+      "note": "In Progress, 2026"
+    }
+  ]
+}

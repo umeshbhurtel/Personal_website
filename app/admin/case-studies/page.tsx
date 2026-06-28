@@ -8,7 +8,7 @@ interface CaseStudy {
 }
 
 const empty = (): Omit<CaseStudy, 'id'> => ({
-  title: '', slug: '', description: '', tags: [], pdfPath: '', pdfName: '', published: false,
+  title: '', slug: '', description: '', tags: [], pdfPath: '', pdfName: '', published: true,
 });
 
 const s = {
@@ -142,12 +142,21 @@ export default function AdminCaseStudies() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}>
-            <input type="checkbox" checked={form.published} onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))} />
-            Published
+        {/* Publish toggle — prominent */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: '8px', background: form.published ? 'rgba(0,229,176,0.08)' : 'rgba(255,255,255,0.04)', border: `1px solid ${form.published ? 'rgba(0,229,176,0.3)' : 'rgba(255,255,255,0.1)'}`, marginBottom: '16px' }}>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: form.published ? '#00E5B0' : 'rgba(255,255,255,0.5)' }}>
+              {form.published ? '🟢 Live — visible on homepage & case studies page' : '⚫ Draft — hidden from site'}
+            </div>
+            <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', marginTop: '2px' }}>Toggle to show or hide this case study on your website</div>
+          </div>
+          <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>
+            <input type="checkbox" checked={form.published} onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))} style={{ width: '16px', height: '16px', cursor: 'pointer' }} />
+            Publish
           </label>
-          <div style={{ flex: 1 }} />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-end' }}>
           {editing && <button style={s.btn('ghost')} onClick={startNew}>Cancel</button>}
           <button style={s.btn('primary')} onClick={save} disabled={saving || uploading}>
             {saving ? 'Saving…' : editing ? 'Update' : 'Create'}

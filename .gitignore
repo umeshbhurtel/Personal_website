@@ -1,44 +1,44 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# ── Dependencies ──────────────────────────────────────
 /node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
-
-# next.js
+# ── Next.js ───────────────────────────────────────────
 /.next/
 /out/
-
-# production
 /build
 
-# misc
+# ── Testing ───────────────────────────────────────────
+/coverage
+
+# ── Environment variables (never commit secrets) ──────
+.env*.local
+.env
+
+# ── Private / personal data files ────────────────────
+/data/contacts.json
+/data/newsletter.json
+/data/case-studies.json
+
+# ── Uploaded user files (CV, PDFs) ───────────────────
+/public/uploads/cv/*
+!/public/uploads/cv/.gitkeep
+/public/uploads/case-studies/*
+!/public/uploads/case-studies/.gitkeep
+
+# ── Editor / OS / tooling ─────────────────────────────
 .DS_Store
 *.pem
+.vscode/
+.claude/
+*.tsbuildinfo
+next-env.d.ts
 
-# debug
+# ── Debug logs ────────────────────────────────────────
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
-
-# local data / user submissions (do not commit)
-/data/contacts.json
-/data/case-studies.json
-
-# uploaded PDFs
-/public/uploads/case-studies/*
-!/public/uploads/case-studies/.gitkeep
-
-# vercel
+# ── Vercel ────────────────────────────────────────────
 .vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts

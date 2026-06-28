@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
+import type { ProjectItem } from '@/lib/db';
 
 function GithubIcon({ size = 14 }: { size?: number }) {
   return (
@@ -12,149 +13,93 @@ function GithubIcon({ size = 14 }: { size?: number }) {
   );
 }
 
-const projects = [
-  {
-    title: 'FixIt Bazaar',
-    tags: ['FYP', 'Web App', 'ASP.NET'],
-    description:
-      'A web-based marketplace for home repair and maintenance services in Nepal. Built with ASP.NET Web Forms, Bootstrap 5, and SQL Server LocalDB. Features a role-based system for clients, service providers, and admins — with booking management, service listings, profile dashboards, and admin controls.',
-    tech: ['ASP.NET Web Forms', 'SQL Server', 'Bootstrap 5', 'C#'],
-    status: 'In Development',
-    link: '#',
-    linkLabel: 'GitHub',
-    icon: <GithubIcon size={14} />,
-    featured: true,
-  },
-  {
-    title: 'Insurance Plan Recommendation DSS',
-    tags: ['FYP Proposal', 'Research', 'Java'],
-    description:
-      'A web-based Decision Support System for insurance plan selection in Nepal, using rule-based inference to guide users through personalized plan matching. Designed for underserved insurance markets with limited digital literacy.',
-    tech: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'],
-    status: 'Research Phase',
-    link: '#',
-    linkLabel: 'View Proposal',
-    icon: <ExternalLink size={14} />,
-    featured: true,
-  },
-  {
-    title: 'Precision Farming in Nepal',
-    tags: ['Research', 'AgriTech', 'Nepal'],
-    description:
-      "Conducted in-depth research into precision farming technologies and their applicability for Nepal's smallholder farmers. Investigated IoT soil sensors, satellite NDVI mapping, drone-based crop monitoring, and variable-rate application systems — analysing technical viability, cost barriers, connectivity constraints, and cooperative delivery models suited to Nepal's hill and Terai farming contexts.",
-    tech: ['IoT Sensors', 'NDVI / Remote Sensing', 'AgriTech', 'Research Documentation'],
-    status: 'Research Complete',
-    link: null,
-    linkLabel: null,
-    icon: null,
-    featured: false,
-  },
-];
-
 const statusColors: Record<string, { bg: string; color: string }> = {
-  'In Development': { bg: 'rgba(0,229,176,0.08)', color: 'var(--accent)' },
-  'Research Phase': { bg: 'rgba(100,150,255,0.08)', color: '#8BAEFF' },
+  'In Development': { bg: 'rgba(0,230,167,0.08)',    color: 'var(--accent)' },
+  'Research Phase': { bg: 'rgba(100,150,255,0.08)',  color: '#8BAEFF' },
   'Research Complete': { bg: 'rgba(100,150,255,0.08)', color: '#8BAEFF' },
-  'Completed': { bg: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)' },
+  'Completed': { bg: 'rgba(255,255,255,0.05)',        color: 'var(--text-muted)' },
 };
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-};
-
-function ProjectCard({ project, large = false }: { project: typeof projects[0]; large?: boolean }) {
+function ProjectCard({ project, large = false }: { project: ProjectItem; large?: boolean }) {
   const statusStyle = statusColors[project.status] ?? statusColors['Completed'];
-
   return (
-    <div
-      className="card-hover rounded-xl p-6 md:p-7 h-full flex flex-col"
+    <motion.div
+      className="rounded-2xl p-5 sm:p-6 md:p-7 h-full flex flex-col"
       style={{
-        background: 'var(--bg-secondary)',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border)',
       }}
+      whileHover={{
+        y: -6,
+        borderColor: 'rgba(0,230,167,0.3)',
+        boxShadow: '0 0 0 1px rgba(0,230,167,0.12), 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,230,167,0.07)',
+        transition: { duration: 0.3, ease: 'easeOut' },
+      }}
     >
-      {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
         <div className="flex flex-wrap gap-1.5">
           {project.tags.map((tag) => (
             <span key={tag} className="tag-chip">{tag}</span>
           ))}
         </div>
-        <span
-          className="px-2.5 py-0.5 rounded text-xs font-medium whitespace-nowrap"
-          style={{ background: statusStyle.bg, color: statusStyle.color, fontFamily: 'var(--font-body)' }}
-        >
+        <span style={{
+          padding: '0.15rem 0.6rem', borderRadius: 4,
+          fontSize: '0.7rem', fontWeight: 600, whiteSpace: 'nowrap',
+          fontFamily: 'var(--font-body)',
+          background: statusStyle.bg, color: statusStyle.color,
+        }}>
           {project.status}
         </span>
       </div>
 
-      {/* Title */}
-      <h3
-        className="mb-3"
-        style={{
-          fontFamily: 'var(--font-heading)',
-          fontSize: large ? '1.4rem' : '1.15rem',
-          color: 'var(--text-primary)',
-        }}
-      >
+      <h3 className="mb-3" style={{ fontFamily: 'var(--font-heading)', fontSize: large ? '1.4rem' : '1.15rem', color: 'var(--text-primary)', lineHeight: 1.2 }}>
         {project.title}
       </h3>
 
-      {/* Description */}
-      <p
-        className="flex-1 mb-4 text-sm"
-        style={{ color: 'var(--text-secondary)', lineHeight: 1.75 }}
-      >
+      <p className="flex-1 mb-4 text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.78 }}>
         {project.description}
       </p>
 
-      {/* Tech stack */}
       <div className="flex flex-wrap gap-1.5 mb-4">
         {project.tech.map((t) => (
-          <span
-            key={t}
-            className="text-xs px-2 py-0.5 rounded"
-            style={{
-              background: 'var(--bg-glass)',
-              border: '1px solid var(--border)',
-              color: 'var(--text-muted)',
-              fontFamily: 'monospace',
-            }}
-          >
+          <span key={t} style={{
+            padding: '0.15rem 0.55rem', borderRadius: 4,
+            fontSize: '0.7rem', fontFamily: 'var(--font-body)', fontWeight: 500,
+            background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)',
+            color: 'var(--text-muted)',
+          }}>
             {t}
           </span>
         ))}
       </div>
 
-      {/* Link */}
       {project.link && project.linkLabel && (
-        <a
+        <motion.a
           href={project.link}
-          className="inline-flex items-center gap-2 text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium"
           style={{ color: 'var(--accent)', fontFamily: 'var(--font-body)', textDecoration: 'none' }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+          whileHover={{ gap: '0.65rem', opacity: 0.85 }}
+          transition={{ duration: 0.2 }}
         >
-          {project.icon} {project.linkLabel}
-        </a>
+          {project.linkIcon === 'github' ? <GithubIcon size={14} /> : <ExternalLink size={14} />}
+          {project.linkLabel}
+        </motion.a>
       )}
-    </div>
+    </motion.div>
   );
 }
 
-export default function Projects() {
+export default function Projects({ projects }: { projects: ProjectItem[] }) {
   const featured = projects.filter((p) => p.featured);
-  const rest = projects.filter((p) => !p.featured);
+  const rest     = projects.filter((p) => !p.featured);
 
   return (
-    <section id="projects" className="py-28 md:py-36" style={{ background: 'var(--bg-primary)' }}>
+    <section id="projects" className="py-20 md:py-28 lg:py-36" style={{ background: 'var(--bg-primary)' }}>
       <div className="container-max">
         <motion.span
           className="section-label"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, x: -12 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5 }}
         >
@@ -164,41 +109,36 @@ export default function Projects() {
         <motion.h2
           className="mt-4 mb-12"
           style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)' }}
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.55, delay: 0.1 }}
         >
           Things I&apos;ve <em style={{ color: 'var(--accent)' }}>built &amp; researched.</em>
         </motion.h2>
 
-        {/* Featured — 2 large */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
           {featured.map((project, i) => (
             <motion.div
-              key={project.title}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
+              key={project.id}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
+              transition={{ duration: 0.55, delay: 0.1 + i * 0.1, ease: [0.4, 0, 0.2, 1] }}
             >
               <ProjectCard project={project} large />
             </motion.div>
           ))}
         </div>
 
-        {/* Rest — smaller 3-col */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {rest.map((project, i) => (
             <motion.div
-              key={project.title}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
+              key={project.id}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+              transition={{ duration: 0.55, delay: 0.15 + i * 0.09, ease: [0.4, 0, 0.2, 1] }}
             >
               <ProjectCard project={project} />
             </motion.div>

@@ -2,60 +2,17 @@
 
 import { motion } from 'framer-motion';
 import { Award } from 'lucide-react';
+import type { ResearchData } from '@/lib/db';
 
-const researchAreas = [
-  {
-    icon: '🌾',
-    title: 'AgriTech & Precision Farming',
-    description:
-      "Researching how IoT sensors, drone imagery, and satellite data can improve crop yields for Nepal's smallholder farming communities — where 60% of the population still depends on agriculture.",
-  },
-  {
-    icon: '🤖',
-    title: 'AI/ML Annotation & Data Pipelines',
-    description:
-      'Investigating practical applied AI: how quality training data is sourced, annotated, and validated — and what the global market for AI data services looks like for emerging economies.',
-  },
-  {
-    icon: '🌐',
-    title: 'Global Talent Models',
-    description:
-      'Studying Technology-as-a-Service and Employer-of-Record frameworks that enable remote talent acquisition across jurisdictions — with a focus on Nepal-to-West talent corridors.',
-  },
-  {
-    icon: '💡',
-    title: 'Decision Support Systems',
-    description:
-      'Exploring rule-based inference engines and expert systems for domains with limited digital penetration — insurance, agriculture policy, and public service delivery.',
-  },
-  {
-    icon: '🖥️',
-    title: 'Potential of a GPU Centre in Nepal',
-    description:
-      'Researching the economic and technical feasibility of establishing a shared GPU compute centre in Nepal — examining power infrastructure, cooling requirements, hydropower advantages, AI workload demand, and the potential to position Nepal as a regional hub for affordable ML training and inference services.',
-  },
-];
 
-const certifications = [
-  { label: 'PV Foundations Cohort #9', icon: '🏅' },
-  { label: 'AWS Academy Cloud Foundations (Capstone-level)', icon: '☁️' },
-  { label: 'B.Sc. (Hons.) IT — Asia Pacific University', note: 'In Progress, 2026', icon: '🎓' },
-];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0 },
-};
-
-export default function Research() {
+export default function Research({ data }: { data: ResearchData }) {
   return (
-    <section id="research" className="py-28 md:py-36" style={{ background: 'var(--bg-secondary)' }}>
+    <section id="research" className="py-20 md:py-28 lg:py-36" style={{ background: 'var(--bg-secondary)' }}>
       <div className="container-max">
         <motion.span
           className="section-label"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, x: -12 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5 }}
         >
@@ -63,23 +20,21 @@ export default function Research() {
         </motion.span>
 
         <motion.h2
-          className="mt-4 mb-6"
+          className="mt-4 mb-5"
           style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(2rem, 4vw, 3rem)' }}
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.55, delay: 0.1 }}
         >
           What I <em style={{ color: 'var(--accent)' }}>investigate.</em>
         </motion.h2>
 
         <motion.p
           className="mb-12 max-w-2xl"
-          style={{ color: 'var(--text-secondary)', lineHeight: 1.8 }}
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.02rem' }}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
@@ -88,33 +43,43 @@ export default function Research() {
           global workforce trends.
         </motion.p>
 
-        {/* Research area cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-16">
-          {researchAreas.map((area, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-14">
+          {data.areas.map((area, i) => (
             <motion.div
-              key={area.title}
-              className="card-hover rounded-xl p-6"
-              style={{
-                background: 'var(--bg-primary)',
-                border: '1px solid var(--border)',
-                borderLeft: '3px solid var(--accent)',
-              }}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
+              key={area.id}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
+              transition={{ duration: 0.55, delay: i * 0.1 }}
+              whileHover={{ y: -5, transition: { duration: 0.25, ease: 'easeOut' } }}
+              style={{
+                borderRadius: 14, padding: '1.5rem',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderLeft: '2px solid var(--accent)',
+                cursor: 'default',
+                transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 0 0 1px rgba(0,230,167,0.2), 0 12px 40px rgba(0,0,0,0.4), 0 0 30px rgba(0,230,167,0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <div className="flex items-start gap-4">
-                <span className="text-2xl flex-shrink-0 mt-0.5">{area.icon}</span>
+                <motion.span
+                  className="text-2xl flex-shrink-0 mt-0.5"
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
+                  {area.icon}
+                </motion.span>
                 <div>
-                  <h3
-                    className="mb-2"
-                    style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: 'var(--text-primary)' }}
-                  >
+                  <h3 className="mb-2" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
                     {area.title}
                   </h3>
-                  <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+                  <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.75 }}>
                     {area.description}
                   </p>
                 </div>
@@ -123,41 +88,53 @@ export default function Research() {
           ))}
         </div>
 
-        {/* Certifications */}
         <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <div className="flex items-center gap-3 mb-6">
             <Award size={18} style={{ color: 'var(--accent)' }} />
-            <h3
-              style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: 'var(--text-primary)' }}
-            >
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: 'var(--text-primary)' }}>
               Credentials &amp; Education
             </h3>
           </div>
 
-          <div className="space-y-3">
-            {certifications.map((cert, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data.certifications.map((cert, i) => (
               <motion.div
-                key={cert.label}
-                className="flex items-center gap-4 p-4 rounded-lg"
-                style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)' }}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={cert.id}
+                className="flex flex-col gap-3 p-4 sm:p-5 rounded-xl"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.35 + i * 0.08 }}
+                whileHover={{
+                  y: -4,
+                  borderColor: 'rgba(0,230,167,0.3)',
+                  boxShadow: '0 0 0 1px rgba(0,230,167,0.1), 0 12px 32px rgba(0,0,0,0.4), 0 0 24px rgba(0,230,167,0.06)',
+                  transition: { duration: 0.25 },
+                }}
               >
-                <span className="text-xl">{cert.icon}</span>
+                {/* Icon box */}
+                <div style={{
+                  width: 44, height: 44, borderRadius: 10,
+                  background: 'var(--accent-dim)',
+                  border: '1px solid rgba(0,230,167,0.18)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '1.3rem', flexShrink: 0,
+                }}>
+                  {cert.icon}
+                </div>
+
                 <div>
-                  <div className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
+                  <div className="font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)', fontSize: '0.9rem', lineHeight: 1.4 }}>
                     {cert.label}
                   </div>
                   {cert.note && (
-                    <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
+                    <div className="mt-1 text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
                       {cert.note}
                     </div>
                   )}

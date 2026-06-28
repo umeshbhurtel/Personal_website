@@ -1,48 +1,65 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-    if (isTouchDevice) return;
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(pointer: coarse)').matches) return;
 
-    const cursor = cursorRef.current;
-    if (!cursor) return;
+    const dot = document.getElementById('custom-cursor-dot');
+    const ring = document.getElementById('custom-cursor-ring');
+    if (!dot || !ring) return;
 
-    cursor.style.display = 'block';
-
-    let rafId: number;
-    let cx = 0;
-    let cy = 0;
+    let mx = -100, my = -100;
+    let rx = -100, ry = -100;
+    let raf: number;
 
     const onMove = (e: MouseEvent) => {
-      cx = e.clientX;
-      cy = e.clientY;
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        if (cursor) {
-          cursor.style.left = cx + 'px';
-          cursor.style.top = cy + 'px';
-        }
+      mx = e.clientX;
+      my = e.clientY;
+      dot.style.left = `${mx}px`;
+      dot.style.top = `${my}px`;
+    };
+
+    const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
+    const animate = () => {
+      rx = lerp(rx, mx, 0.12);
+      ry = lerp(ry, my, 0.12);
+      ring.style.left = `${rx}px`;
+      ring.style.top = `${ry}px`;
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+
+    const addHover = () => document.body.classList.add('cursor-hover');
+    const removeHover = () => document.body.classList.remove('cursor-hover');
+
+    const attachListeners = () => {
+      document.querySelectorAll<HTMLElement>('a, button, [role="button"], input, textarea, select').forEach((el) => {
+        el.removeEventListener('mouseenter', addHover);
+        el.removeEventListener('mouseleave', removeHover);
+        el.addEventListener('mouseenter', addHover);
+        el.addEventListener('mouseleave', removeHover);
       });
     };
 
-    document.addEventListener('mousemove', onMove);
+    attachListeners();
+    const observer = new MutationObserver(attachListeners);
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('mousemove', onMove);
+
     return () => {
-      document.removeEventListener('mousemove', onMove);
-      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('mousemove', onMove);
+      cancelAnimationFrame(raf);
+      observer.disconnect();
     };
   }, []);
 
   return (
-    <div
-      id="custom-cursor"
-      ref={cursorRef}
-      style={{ display: 'none' }}
-      aria-hidden="true"
-    />
+    <>
+      <div id="custom-cursor-dot" aria-hidden="true" />
+      <div id="custom-cursor-ring" aria-hidden="true" />
+    </>
   );
 }

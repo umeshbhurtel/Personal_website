@@ -8,6 +8,11 @@ const navItems = [
   { label: 'Blog Posts', href: '/admin/blog', icon: '✦' },
   { label: 'Case Studies', href: '/admin/case-studies', icon: '⬡' },
   { label: 'Site Content', href: '/admin/content', icon: '✏' },
+  { label: 'Experience', href: '/admin/experience', icon: '◎' },
+  { label: 'Projects', href: '/admin/projects', icon: '⬖' },
+  { label: 'Research', href: '/admin/research', icon: '◉' },
+  { label: 'Skills', href: '/admin/skills', icon: '◇' },
+  { label: 'CV / Resume', href: '/admin/cv', icon: '↓' },
   { label: 'Submissions', href: '/admin/submissions', icon: '✉' },
 ];
 

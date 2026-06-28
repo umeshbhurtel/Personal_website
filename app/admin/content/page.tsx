@@ -44,7 +44,7 @@ export default function AdminContent() {
   async function save() {
     setSaving(true); setMsg('');
     const res = await fetch('/api/content', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(content) });
-    setMsg(res.ok ? 'Saved! Restart dev server to see changes on the homepage.' : 'Error saving');
+    setMsg(res.ok ? 'Saved! Changes are now live on the homepage.' : 'Error saving');
     setSaving(false);
   }
 

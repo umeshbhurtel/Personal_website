@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LoadingScreen from "@/components/LoadingScreen";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import ScrollProgress from "@/components/ScrollProgress";
+import CustomCursor from "@/components/CustomCursor";
 
 export const metadata: Metadata = {
   title: 'Umesh Bhurtel — IT Researcher & R&D Associate',
@@ -35,12 +39,17 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body>
         <div className="grain-overlay" aria-hidden="true" />
+        <div className="grid-bg" aria-hidden="true" />
+        <LoadingScreen />
+        <SmoothScrollProvider />
+        <ScrollProgress />
+        <CustomCursor />
         {children}
       </body>
     </html>

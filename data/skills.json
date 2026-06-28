@@ -1,0 +1,45 @@
+{
+  "aiLlm": [
+    "Prompt Engineering",
+    "LLM Evaluation Methodology",
+    "API Basics",
+    "Python & R",
+    "SQL",
+    "Statistics",
+    "Excel"
+  ],
+  "researchProduct": [
+    "Research Design",
+    "Research Report Writing",
+    "Product Analysis",
+    "Product Framework",
+    "umes"
+  ],
+  "professional": [
+    "Technical Writing",
+    "Bid Evaluation",
+    "Strategic Presentations",
+    "Content Strategy",
+    "Cross-Cultural Collaboration",
+    "Project Management",
+    "LinkedIn Thought Leadership",
+    "Remote Team Coordination",
+    "APA 7 Academic Writing",
+    "Workshop Facilitation",
+    "umesh"
+  ],
+  "languages": [
+    {
+      "lang": "English",
+      "level": "Professional"
+    },
+    {
+      "lang": "Nepali",
+      "level": "Native"
+    },
+    {
+      "lang": "Hindi",
+      "level": "native"
+    }
+  ]
+}
