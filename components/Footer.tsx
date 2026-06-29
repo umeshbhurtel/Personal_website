@@ -32,7 +32,7 @@ const navLinks = [
 const socials = [
   {
     icon: <LinkedinIcon size={17} />,
-    href: 'https://linkedin.com/in/umeshbhurtel-8b7b04299',
+    href: 'https://www.linkedin.com/in/umesh-bhurtel-8b7b04299',
     label: 'LinkedIn',
   },
   {

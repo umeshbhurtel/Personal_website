@@ -107,7 +107,7 @@ export default function Contact() {
             <div className="space-y-3">
               {[
                 { icon: <Mail size={16} />, label: 'Email', value: 'umeshbhurtel122@gmail.com', href: 'mailto:umeshbhurtel122@gmail.com' },
-                { icon: <LinkedinIcon size={16} />, label: 'LinkedIn', value: 'linkedin.com/in/umeshbhurtel-8b7b04299', href: 'https://linkedin.com/in/umeshbhurtel-8b7b04299' },
+                { icon: <LinkedinIcon size={16} />, label: 'LinkedIn', value: 'linkedin.com/in/umesh-bhurtel-8b7b04299', href: 'https://www.linkedin.com/in/umesh-bhurtel-8b7b04299' },
                 { icon: <MapPin size={16} />, label: 'Location', value: 'Bhaktapur, Nepal (UTC+5:45)', href: null },
               ].map(({ icon, label, value, href }) => (
                 <div key={label} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>

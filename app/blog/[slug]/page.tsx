@@ -88,7 +88,7 @@ export default function PostPage({ params }: Props) {
               <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.65 }}>
                 IT Researcher &amp; R&D Associate at Logictive Solutions. Based in Bhaktapur, Nepal.
               </p>
-              <a href="https://linkedin.com/in/umeshbhurtel-8b7b04299" target="_blank" rel="noopener noreferrer" className="inline-flex mt-2 text-xs hover:opacity-80" style={{ color: 'var(--accent)', fontFamily: 'var(--font-body)', textDecoration: 'none' }}>
+              <a href="https://www.linkedin.com/in/umesh-bhurtel-8b7b04299" target="_blank" rel="noopener noreferrer" className="inline-flex mt-2 text-xs hover:opacity-80" style={{ color: 'var(--accent)', fontFamily: 'var(--font-body)', textDecoration: 'none' }}>
                 Connect on LinkedIn →
               </a>
             </div>
