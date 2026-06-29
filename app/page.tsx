@@ -22,14 +22,20 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-export default function Home() {
-  const content = getSiteContent();
-  const experiences = getExperience();
-  const research = getResearchData();
-  const skills = getSkillsData();
-  const projects = getProjects();
-  const blogPosts = getPublishedBlogPosts().slice(0, 2);
-  const caseStudies = getPublishedCaseStudies().slice(0, 4);
+export default async function Home() {
+  const [content, experiences, research, skills, projects, allBlogPosts, allCaseStudies] =
+    await Promise.all([
+      getSiteContent(),
+      getExperience(),
+      getResearchData(),
+      getSkillsData(),
+      getProjects(),
+      getPublishedBlogPosts(),
+      getPublishedCaseStudies(),
+    ]);
+
+  const blogPosts = allBlogPosts.slice(0, 2);
+  const caseStudies = allCaseStudies.slice(0, 4);
 
   return (
     <>

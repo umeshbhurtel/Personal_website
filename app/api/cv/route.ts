@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
@@ -5,7 +6,7 @@ import { isAuthenticated } from '@/lib/auth';
 import { getCVData, setCVData } from '@/lib/db';
 
 export async function GET() {
-  return NextResponse.json(getCVData());
+  return NextResponse.json(await getCVData());
 }
 
 export async function POST(req: Request) {
@@ -25,12 +26,11 @@ export async function POST(req: Request) {
   const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'cv');
   await mkdir(uploadDir, { recursive: true });
 
-  // Always overwrite as cv.pdf so the download URL never changes
   const filePath = path.join(uploadDir, 'cv.pdf');
   await writeFile(filePath, buffer);
 
   const cvData = { path: '/uploads/cv/cv.pdf', originalName: file.name, uploadedAt: new Date().toISOString() };
-  setCVData(cvData);
+  await setCVData(cvData);
 
   return NextResponse.json(cvData);
 }

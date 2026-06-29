@@ -5,7 +5,7 @@ import { isAuthenticated } from '@/lib/auth';
 interface Params { params: { id: string } }
 
 export async function GET(_: Request, { params }: Params) {
-  const post = getBlogPostById(params.id);
+  const post = await getBlogPostById(params.id);
   if (!post) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json(post);
 }
@@ -13,7 +13,7 @@ export async function GET(_: Request, { params }: Params) {
 export async function PUT(req: Request, { params }: Params) {
   if (!isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const existing = getBlogPostById(params.id);
+  const existing = await getBlogPostById(params.id);
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const body = await req.json();
@@ -29,12 +29,12 @@ export async function PUT(req: Request, { params }: Params) {
     date: body.date ?? existing.date,
   };
 
-  saveBlogPost(updated);
+  await saveBlogPost(updated);
   return NextResponse.json(updated);
 }
 
 export async function DELETE(_: Request, { params }: Params) {
   if (!isAuthenticated()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  deleteBlogPost(params.id);
+  await deleteBlogPost(params.id);
   return NextResponse.json({ success: true });
 }

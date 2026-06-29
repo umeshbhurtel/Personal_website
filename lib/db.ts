@@ -1,28 +1,4 @@
-import fs from 'fs';
-import path from 'path';
-
-const DATA_DIR = path.join(process.cwd(), 'data');
-
-function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-function readFile<T>(filename: string, fallback: T): T {
-  ensureDir();
-  const filePath = path.join(DATA_DIR, filename);
-  if (!fs.existsSync(filePath)) return fallback;
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T;
-  } catch {
-    return fallback;
-  }
-}
-
-function writeFile(filename: string, data: unknown) {
-  ensureDir();
-  const filePath = path.join(DATA_DIR, filename);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-}
+import { getDb } from './mongodb';
 
 // ─── Types ────────────────────────────────────────────
 
@@ -62,103 +38,6 @@ export interface Contact {
 
 export type SiteContent = Record<string, string>;
 
-// ─── Blog ─────────────────────────────────────────────
-
-export function getAllBlogPosts(): BlogPost[] {
-  return readFile<BlogPost[]>('blog.json', []);
-}
-
-export function getPublishedBlogPosts(): BlogPost[] {
-  return getAllBlogPosts()
-    .filter((p) => p.published)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-}
-
-export function getBlogPostBySlug(slug: string): BlogPost | null {
-  return getAllBlogPosts().find((p) => p.slug === slug) ?? null;
-}
-
-export function getBlogPostById(id: string): BlogPost | null {
-  return getAllBlogPosts().find((p) => p.id === id) ?? null;
-}
-
-export function saveBlogPost(post: BlogPost) {
-  const posts = getAllBlogPosts();
-  const idx = posts.findIndex((p) => p.id === post.id);
-  if (idx >= 0) {
-    posts[idx] = post;
-  } else {
-    posts.push(post);
-  }
-  writeFile('blog.json', posts);
-}
-
-export function deleteBlogPost(id: string) {
-  const posts = getAllBlogPosts().filter((p) => p.id !== id);
-  writeFile('blog.json', posts);
-}
-
-// ─── Case Studies ─────────────────────────────────────
-
-export function getAllCaseStudies(): CaseStudy[] {
-  return readFile<CaseStudy[]>('case-studies.json', []);
-}
-
-export function getPublishedCaseStudies(): CaseStudy[] {
-  return getAllCaseStudies()
-    .filter((c) => c.published)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-}
-
-export function getCaseStudyBySlug(slug: string): CaseStudy | null {
-  return getAllCaseStudies().find((c) => c.slug === slug) ?? null;
-}
-
-export function getCaseStudyById(id: string): CaseStudy | null {
-  return getAllCaseStudies().find((c) => c.id === id) ?? null;
-}
-
-export function saveCaseStudy(cs: CaseStudy) {
-  const list = getAllCaseStudies();
-  const idx = list.findIndex((c) => c.id === cs.id);
-  if (idx >= 0) {
-    list[idx] = cs;
-  } else {
-    list.push(cs);
-  }
-  writeFile('case-studies.json', list);
-}
-
-export function deleteCaseStudy(id: string) {
-  const list = getAllCaseStudies().filter((c) => c.id !== id);
-  writeFile('case-studies.json', list);
-}
-
-// ─── Contacts ─────────────────────────────────────────
-
-export function getAllContacts(): Contact[] {
-  return readFile<Contact[]>('contacts.json', [])
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-}
-
-export function saveContact(contact: Contact) {
-  const list = readFile<Contact[]>('contacts.json', []);
-  list.push(contact);
-  writeFile('contacts.json', list);
-}
-
-// ─── Site Content ─────────────────────────────────────
-
-export function getSiteContent(): SiteContent {
-  return readFile<SiteContent>('content.json', {});
-}
-
-export function setSiteContent(data: SiteContent) {
-  writeFile('content.json', data);
-}
-
-// ─── Experience ───────────────────────────────────────
-
 export interface ExperienceItem {
   id: string;
   company: string;
@@ -168,6 +47,53 @@ export interface ExperienceItem {
   current: boolean;
   points: string[];
 }
+
+export interface ResearchArea {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface Certification {
+  id: string;
+  icon: string;
+  label: string;
+  note?: string;
+}
+
+export interface ResearchData {
+  areas: ResearchArea[];
+  certifications: Certification[];
+}
+
+export interface SkillsData {
+  aiLlm: string[];
+  researchProduct: string[];
+  professional: string[];
+  languages: { lang: string; level: string }[];
+}
+
+export interface ProjectItem {
+  id: string;
+  title: string;
+  tags: string[];
+  description: string;
+  tech: string[];
+  status: string;
+  link?: string;
+  linkLabel?: string;
+  linkIcon?: 'github' | 'external';
+  featured: boolean;
+}
+
+export interface CVData {
+  path: string;
+  originalName: string;
+  uploadedAt: string;
+}
+
+// ─── Defaults ─────────────────────────────────────────
 
 const defaultExperience: ExperienceItem[] = [
   {
@@ -200,36 +126,6 @@ const defaultExperience: ExperienceItem[] = [
   },
 ];
 
-export function getExperience(): ExperienceItem[] {
-  const stored = readFile<ExperienceItem[]>('experience.json', []);
-  return stored.length ? stored : defaultExperience;
-}
-
-export function setExperience(data: ExperienceItem[]) {
-  writeFile('experience.json', data);
-}
-
-// ─── Research ─────────────────────────────────────────
-
-export interface ResearchArea {
-  id: string;
-  icon: string;
-  title: string;
-  description: string;
-}
-
-export interface Certification {
-  id: string;
-  icon: string;
-  label: string;
-  note?: string;
-}
-
-export interface ResearchData {
-  areas: ResearchArea[];
-  certifications: Certification[];
-}
-
 const defaultResearch: ResearchData = {
   areas: [
     { id: '1', icon: '🌾', title: 'AgriTech & Precision Farming', description: "Researching how IoT sensors, drone imagery, and satellite data can improve crop yields for Nepal's smallholder farming communities — where 60% of the population still depends on agriculture." },
@@ -245,28 +141,6 @@ const defaultResearch: ResearchData = {
   ],
 };
 
-export function getResearchData(): ResearchData {
-  const stored = readFile<ResearchData | null>('research.json', null);
-  if (!stored) return defaultResearch;
-  return {
-    areas: stored.areas?.length ? stored.areas : defaultResearch.areas,
-    certifications: stored.certifications?.length ? stored.certifications : defaultResearch.certifications,
-  };
-}
-
-export function setResearchData(data: ResearchData) {
-  writeFile('research.json', data);
-}
-
-// ─── Skills ───────────────────────────────────────────
-
-export interface SkillsData {
-  aiLlm: string[];
-  researchProduct: string[];
-  professional: string[];
-  languages: { lang: string; level: string }[];
-}
-
 const defaultSkills: SkillsData = {
   aiLlm: ['Prompt Engineering', 'LLM Evaluation Methodology', 'API Basics', 'Python & R', 'SQL', 'Statistics', 'Excel'],
   researchProduct: ['Research Design', 'Research Report Writing', 'Product Analysis', 'Product Framework'],
@@ -274,42 +148,12 @@ const defaultSkills: SkillsData = {
   languages: [{ lang: 'English', level: 'Professional' }, { lang: 'Nepali', level: 'Native' }],
 };
 
-export function getSkillsData(): SkillsData {
-  const stored = readFile<SkillsData | null>('skills.json', null);
-  if (!stored) return defaultSkills;
-  return {
-    aiLlm: stored.aiLlm?.length ? stored.aiLlm : defaultSkills.aiLlm,
-    researchProduct: stored.researchProduct?.length ? stored.researchProduct : defaultSkills.researchProduct,
-    professional: stored.professional?.length ? stored.professional : defaultSkills.professional,
-    languages: stored.languages?.length ? stored.languages : defaultSkills.languages,
-  };
-}
-
-export function setSkillsData(data: SkillsData) {
-  writeFile('skills.json', data);
-}
-
-// ─── Projects ─────────────────────────────────────────
-
-export interface ProjectItem {
-  id: string;
-  title: string;
-  tags: string[];
-  description: string;
-  tech: string[];
-  status: string;
-  link?: string;
-  linkLabel?: string;
-  linkIcon?: 'github' | 'external';
-  featured: boolean;
-}
-
 const defaultProjects: ProjectItem[] = [
   {
     id: '1',
     title: 'FixIt Bazaar',
     tags: ['FYP', 'Web App', 'ASP.NET'],
-    description: 'A web-based marketplace for home repair and maintenance services in Nepal. Built with ASP.NET Web Forms, Bootstrap 5, and SQL Server LocalDB. Features a role-based system for clients, service providers, and admins — with booking management, service listings, profile dashboards, and admin controls.',
+    description: 'A web-based marketplace for home repair and maintenance services in Nepal. Built with ASP.NET Web Forms, Bootstrap 5, and SQL Server LocalDB. Features a role-based system for clients, service providers, and admins.',
     tech: ['ASP.NET Web Forms', 'SQL Server', 'Bootstrap 5', 'C#'],
     status: 'In Development',
     link: '#',
@@ -321,7 +165,7 @@ const defaultProjects: ProjectItem[] = [
     id: '2',
     title: 'Insurance Plan Recommendation DSS',
     tags: ['FYP Proposal', 'Research', 'Java'],
-    description: 'A web-based Decision Support System for insurance plan selection in Nepal, using rule-based inference to guide users through personalized plan matching. Designed for underserved insurance markets with limited digital literacy.',
+    description: 'A web-based Decision Support System for insurance plan selection in Nepal, using rule-based inference to guide users through personalized plan matching.',
     tech: ['Java', 'Spring Boot', 'MySQL', 'Thymeleaf'],
     status: 'Research Phase',
     link: '#',
@@ -340,27 +184,201 @@ const defaultProjects: ProjectItem[] = [
   },
 ];
 
-export function getProjects(): ProjectItem[] {
-  const stored = readFile<ProjectItem[]>('projects.json', []);
+// ─── Helper ───────────────────────────────────────────
+
+async function getDoc<T>(collection: string, defaultValue: T): Promise<T> {
+  const db = await getDb();
+  const doc = await db.collection(collection).findOne({ _key: 'main' });
+  if (!doc) return defaultValue;
+  const { _id, _key, ...rest } = doc;
+  void _id; void _key;
+  return rest as T;
+}
+
+async function setDoc(collection: string, data: unknown) {
+  const db = await getDb();
+  await db.collection(collection).updateOne(
+    { _key: 'main' },
+    { $set: { _key: 'main', ...(data as object) } },
+    { upsert: true }
+  );
+}
+
+async function getList<T>(collection: string, defaultValue: T[]): Promise<T[]> {
+  const db = await getDb();
+  const docs = await db.collection(collection).find({}).toArray();
+  if (!docs.length) return defaultValue;
+  return docs.map(({ _id, ...rest }) => { void _id; return rest as T; });
+}
+
+// ─── Blog ─────────────────────────────────────────────
+
+export async function getAllBlogPosts(): Promise<BlogPost[]> {
+  return getList<BlogPost>('blog', []);
+}
+
+export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
+  const posts = await getAllBlogPosts();
+  return posts
+    .filter((p) => p.published)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+  const db = await getDb();
+  const doc = await db.collection('blog').findOne({ slug });
+  if (!doc) return null;
+  const { _id, ...rest } = doc;
+  void _id;
+  return rest as BlogPost;
+}
+
+export async function getBlogPostById(id: string): Promise<BlogPost | null> {
+  const db = await getDb();
+  const doc = await db.collection('blog').findOne({ id });
+  if (!doc) return null;
+  const { _id, ...rest } = doc;
+  void _id;
+  return rest as BlogPost;
+}
+
+export async function saveBlogPost(post: BlogPost) {
+  const db = await getDb();
+  await db.collection('blog').updateOne({ id: post.id }, { $set: post }, { upsert: true });
+}
+
+export async function deleteBlogPost(id: string) {
+  const db = await getDb();
+  await db.collection('blog').deleteOne({ id });
+}
+
+// ─── Case Studies ─────────────────────────────────────
+
+export async function getAllCaseStudies(): Promise<CaseStudy[]> {
+  return getList<CaseStudy>('caseStudies', []);
+}
+
+export async function getPublishedCaseStudies(): Promise<CaseStudy[]> {
+  const list = await getAllCaseStudies();
+  return list
+    .filter((c) => c.published)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
+  const db = await getDb();
+  const doc = await db.collection('caseStudies').findOne({ slug });
+  if (!doc) return null;
+  const { _id, ...rest } = doc;
+  void _id;
+  return rest as CaseStudy;
+}
+
+export async function getCaseStudyById(id: string): Promise<CaseStudy | null> {
+  const db = await getDb();
+  const doc = await db.collection('caseStudies').findOne({ id });
+  if (!doc) return null;
+  const { _id, ...rest } = doc;
+  void _id;
+  return rest as CaseStudy;
+}
+
+export async function saveCaseStudy(cs: CaseStudy) {
+  const db = await getDb();
+  await db.collection('caseStudies').updateOne({ id: cs.id }, { $set: cs }, { upsert: true });
+}
+
+export async function deleteCaseStudy(id: string) {
+  const db = await getDb();
+  await db.collection('caseStudies').deleteOne({ id });
+}
+
+// ─── Contacts ─────────────────────────────────────────
+
+export async function getAllContacts(): Promise<Contact[]> {
+  const list = await getList<Contact>('contacts', []);
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export async function saveContact(contact: Contact) {
+  const db = await getDb();
+  await db.collection('contacts').insertOne({ ...contact });
+}
+
+// ─── Site Content ─────────────────────────────────────
+
+export async function getSiteContent(): Promise<SiteContent> {
+  return getDoc<SiteContent>('siteContent', {});
+}
+
+export async function setSiteContent(data: SiteContent) {
+  await setDoc('siteContent', data);
+}
+
+// ─── Experience ───────────────────────────────────────
+
+export async function getExperience(): Promise<ExperienceItem[]> {
+  const stored = await getList<ExperienceItem>('experience', []);
+  return stored.length ? stored : defaultExperience;
+}
+
+export async function setExperience(data: ExperienceItem[]) {
+  const db = await getDb();
+  await db.collection('experience').deleteMany({});
+  if (data.length) await db.collection('experience').insertMany(data.map(d => ({ ...d })));
+}
+
+// ─── Research ─────────────────────────────────────────
+
+export async function getResearchData(): Promise<ResearchData> {
+  const stored = await getDoc<ResearchData | null>('research', null);
+  if (!stored) return defaultResearch;
+  return {
+    areas: stored.areas?.length ? stored.areas : defaultResearch.areas,
+    certifications: stored.certifications?.length ? stored.certifications : defaultResearch.certifications,
+  };
+}
+
+export async function setResearchData(data: ResearchData) {
+  await setDoc('research', data);
+}
+
+// ─── Skills ───────────────────────────────────────────
+
+export async function getSkillsData(): Promise<SkillsData> {
+  const stored = await getDoc<SkillsData | null>('skills', null);
+  if (!stored) return defaultSkills;
+  return {
+    aiLlm: stored.aiLlm?.length ? stored.aiLlm : defaultSkills.aiLlm,
+    researchProduct: stored.researchProduct?.length ? stored.researchProduct : defaultSkills.researchProduct,
+    professional: stored.professional?.length ? stored.professional : defaultSkills.professional,
+    languages: stored.languages?.length ? stored.languages : defaultSkills.languages,
+  };
+}
+
+export async function setSkillsData(data: SkillsData) {
+  await setDoc('skills', data);
+}
+
+// ─── Projects ─────────────────────────────────────────
+
+export async function getProjects(): Promise<ProjectItem[]> {
+  const stored = await getList<ProjectItem>('projects', []);
   return stored.length ? stored : defaultProjects;
 }
 
-export function setProjects(data: ProjectItem[]) {
-  writeFile('projects.json', data);
+export async function setProjects(data: ProjectItem[]) {
+  const db = await getDb();
+  await db.collection('projects').deleteMany({});
+  if (data.length) await db.collection('projects').insertMany(data.map(d => ({ ...d })));
 }
 
 // ─── CV ───────────────────────────────────────────────
 
-export interface CVData {
-  path: string;
-  originalName: string;
-  uploadedAt: string;
+export async function getCVData(): Promise<CVData | null> {
+  return getDoc<CVData | null>('cv', null);
 }
 
-export function getCVData(): CVData | null {
-  return readFile<CVData | null>('cv.json', null);
-}
-
-export function setCVData(data: CVData) {
-  writeFile('cv.json', data);
+export async function setCVData(data: CVData) {
+  await setDoc('cv', data);
 }

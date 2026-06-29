@@ -1,9 +1,10 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getAllCaseStudies, saveCaseStudy } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
-  const list = getAllCaseStudies().sort(
+  const list = (await getAllCaseStudies()).sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   return NextResponse.json(list);
@@ -31,6 +32,6 @@ export async function POST(req: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  saveCaseStudy(cs);
+  await saveCaseStudy(cs);
   return NextResponse.json(cs, { status: 201 });
 }

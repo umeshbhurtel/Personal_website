@@ -10,15 +10,12 @@ export const metadata: Metadata = {
   description: 'Research case studies and reports by Umesh Bhurtel.',
 };
 
-export default function CaseStudiesPage() {
-  const cases = getPublishedCaseStudies();
+export default async function CaseStudiesPage() {
+  const cases = await getPublishedCaseStudies();
 
   return (
     <>
-      <header
-        className="fixed top-0 left-0 right-0 z-50"
-        style={{ backgroundColor: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}
-      >
+      <header className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)' }}>
         <div className="container-max flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 text-sm hover:opacity-80" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)', textDecoration: 'none' }}>
             <ArrowLeft size={15} /> Back home
@@ -37,7 +34,7 @@ export default function CaseStudiesPage() {
               Case <em style={{ color: 'var(--accent)' }}>Studies</em>
             </h1>
             <p style={{ color: 'var(--text-secondary)', maxWidth: '520px', lineHeight: 1.75 }}>
-              In-depth research reports, analysis documents, and case studies. Download the PDFs or read the summaries.
+              In-depth research reports, analysis documents, and case studies.
             </p>
           </div>
 
@@ -50,34 +47,16 @@ export default function CaseStudiesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {cases.map((cs) => (
                 <Link key={cs.slug} href={`/case-studies/${cs.slug}`} style={{ textDecoration: 'none' }}>
-                  <article
-                    className="card-hover rounded-xl p-7 h-full flex flex-col cursor-pointer"
-                    style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}
-                  >
+                  <article className="card-hover rounded-xl p-7 h-full flex flex-col cursor-pointer" style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
                     <div className="flex items-center gap-3 mb-4">
                       <span style={{ color: 'var(--accent)', opacity: 0.8 }}><FileText size={20} /></span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {cs.tags.map((tag) => <span key={tag} className="tag-chip">{tag}</span>)}
-                      </div>
+                      <div className="flex flex-wrap gap-1.5">{cs.tags.map((tag) => <span key={tag} className="tag-chip">{tag}</span>)}</div>
                     </div>
-
-                    <h2 className="mb-3 flex-1" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: 'var(--text-primary)', lineHeight: 1.35 }}>
-                      {cs.title}
-                    </h2>
-
-                    <p className="text-sm mb-5" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-                      {cs.description}
-                    </p>
-
+                    <h2 className="mb-3 flex-1" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: 'var(--text-primary)', lineHeight: 1.35 }}>{cs.title}</h2>
+                    <p className="text-sm mb-5" style={{ color: 'var(--text-secondary)', lineHeight: 1.7 }}>{cs.description}</p>
                     <div className="flex items-center justify-between">
-                      {cs.pdfPath ? (
-                        <span className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
-                          📄 PDF available
-                        </span>
-                      ) : <span />}
-                      <span className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--accent)', fontFamily: 'var(--font-body)' }}>
-                        View <ArrowRight size={12} />
-                      </span>
+                      {cs.pdfPath ? <span className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>📄 PDF available</span> : <span />}
+                      <span className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--accent)', fontFamily: 'var(--font-body)' }}>View <ArrowRight size={12} /></span>
                     </div>
                   </article>
                 </Link>

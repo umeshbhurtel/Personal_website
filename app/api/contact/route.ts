@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { saveContact } from '@/lib/db';
 import { sendContactNotification } from '@/lib/email';
@@ -20,10 +21,8 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    // Save to local JSON DB
-    saveContact(contact);
+    await saveContact(contact);
 
-    // Send email notification (non-blocking — don't fail if email fails)
     sendContactNotification(contact).catch((err) => {
       console.error('[email] Failed to send notification:', err.message);
     });

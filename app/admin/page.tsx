@@ -4,12 +4,14 @@ import { getAllBlogPosts, getAllCaseStudies, getAllContacts } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
   if (!isAuthenticated()) redirect('/admin/login');
 
-  const posts = getAllBlogPosts();
-  const cases = getAllCaseStudies();
-  const contacts = getAllContacts();
+  const [posts, cases, contacts] = await Promise.all([
+    getAllBlogPosts(),
+    getAllCaseStudies(),
+    getAllContacts(),
+  ]);
 
   const stats = [
     { label: 'Blog Posts', value: posts.length, published: posts.filter((p) => p.published).length, href: '/admin/blog', color: '#00E5B0' },
@@ -27,12 +29,7 @@ export default function AdminDashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '36px' }}>
         {stats.map((s) => (
           <a key={s.label} href={s.href} style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '10px',
-              padding: '20px',
-            }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '20px' }}>
               <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px' }}>
                 {s.label}
               </div>
@@ -47,23 +44,13 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      <div style={{
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        borderRadius: '10px',
-        padding: '20px',
-        marginBottom: '16px',
-      }}>
+      <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '20px', marginBottom: '16px' }}>
         <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#fff', marginBottom: '12px' }}>Recent Submissions</h3>
         {contacts.length === 0 ? (
           <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)' }}>No submissions yet.</p>
         ) : (
           contacts.slice(0, 3).map((c) => (
-            <div key={c.id} style={{
-              padding: '10px 0',
-              borderBottom: '1px solid rgba(255,255,255,0.05)',
-              fontSize: '13px',
-            }}>
+            <div key={c.id} style={{ padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '13px' }}>
               <span style={{ color: '#fff', fontWeight: 500 }}>{c.name}</span>
               <span style={{ color: 'rgba(255,255,255,0.4)', margin: '0 8px' }}>—</span>
               <span style={{ color: 'rgba(255,255,255,0.5)' }}>{c.email}</span>
@@ -81,20 +68,7 @@ export default function AdminDashboard() {
           { label: '+ New Case Study', href: '/admin/case-studies' },
           { label: 'Edit Site Content', href: '/admin/content' },
         ].map((btn) => (
-          <a
-            key={btn.label}
-            href={btn.href}
-            style={{
-              padding: '9px 18px',
-              background: 'rgba(0,229,176,0.1)',
-              border: '1px solid rgba(0,229,176,0.25)',
-              borderRadius: '8px',
-              color: '#00E5B0',
-              textDecoration: 'none',
-              fontSize: '13px',
-              fontWeight: 500,
-            }}
-          >
+          <a key={btn.label} href={btn.href} style={{ padding: '9px 18px', background: 'rgba(0,229,176,0.1)', border: '1px solid rgba(0,229,176,0.25)', borderRadius: '8px', color: '#00E5B0', textDecoration: 'none', fontSize: '13px', fontWeight: 500 }}>
             {btn.label}
           </a>
         ))}

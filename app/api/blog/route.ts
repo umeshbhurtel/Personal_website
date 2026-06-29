@@ -1,9 +1,10 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getAllBlogPosts, saveBlogPost } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
-  const posts = getAllBlogPosts().sort(
+  const posts = (await getAllBlogPosts()).sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   return NextResponse.json(posts);
@@ -32,6 +33,6 @@ export async function POST(req: Request) {
     createdAt: new Date().toISOString(),
   };
 
-  saveBlogPost(post);
+  await saveBlogPost(post);
   return NextResponse.json(post, { status: 201 });
 }
