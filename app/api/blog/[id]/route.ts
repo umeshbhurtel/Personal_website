@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { getBlogPostById, saveBlogPost, deleteBlogPost } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
