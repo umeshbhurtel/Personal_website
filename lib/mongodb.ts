@@ -1,15 +1,12 @@
 import { MongoClient } from 'mongodb';
 
-const uri = process.env.MONGODB_URI ?? '';
-
-let clientPromise: Promise<MongoClient>;
-
 declare global {
   // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-function createClientPromise() {
+function createClientPromise(): Promise<MongoClient> {
+  const uri = process.env.MONGODB_URI;
   if (!uri) {
     return Promise.reject(new Error('MONGODB_URI environment variable is not set'));
   }
@@ -17,18 +14,17 @@ function createClientPromise() {
   return client.connect();
 }
 
-if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClientPromise) {
-    global._mongoClientPromise = createClientPromise();
+function getClientPromise(): Promise<MongoClient> {
+  if (process.env.NODE_ENV === 'development') {
+    if (!global._mongoClientPromise) {
+      global._mongoClientPromise = createClientPromise();
+    }
+    return global._mongoClientPromise;
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  clientPromise = createClientPromise();
+  return createClientPromise();
 }
 
-export default clientPromise;
-
 export async function getDb() {
-  const c = await clientPromise;
-  return c.db('portfolio');
+  const client = await getClientPromise();
+  return client.db('portfolio');
 }
